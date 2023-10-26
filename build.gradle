@@ -1,0 +1,55 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.1.5'
+    id 'io.spring.dependency-management' version '1.1.3'
+}
+
+bootJar.enabled = false
+
+repositories {
+    mavenCentral()
+}
+
+subprojects {
+
+    group = 'com.example'
+    version = '0.0.1-SNAPSHOT'
+    java.sourceCompatibility = '17'
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+        compileOnly 'org.projectlombok:lombok'
+        runtimeOnly 'com.h2database:h2'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
+}
+
+project(':metadata') {
+    bootJar.enabled=false
+    jar.enabled=true
+}
+
+project(':jdbc'){
+    bootJar.enabled=false
+    jar.enabled=true
+    dependencies.implementation project(':metadata')
+}
