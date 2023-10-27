@@ -14,8 +14,12 @@ class ConnectionUtilTest {
 
     @Test
     void getConnection(){
-        Connection connection = ConnectionUtil.getConnection();
-        assertThat(connection).isNotNull();
+        Connection driverManagerCon = ConnectionUtil.getConnection(null);
+        assertThat(driverManagerCon).isNotNull();
+        Connection driverDataSourceCon = ConnectionUtil.getConnection(ConnectionUtil.getDriverDataSource());
+        assertThat(driverDataSourceCon).isNotNull();
+        Connection hikariDataSourceCon = ConnectionUtil.getConnection(ConnectionUtil.getHikariDataSource());
+        assertThat(hikariDataSourceCon).isNotNull();
     }
 
     @Test

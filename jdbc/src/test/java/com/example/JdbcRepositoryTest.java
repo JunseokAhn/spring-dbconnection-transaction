@@ -12,9 +12,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JdbcRepositoryTest {
 
-//    Repository repository = new JdbcRepository(null);
-//    Repository repository = new JdbcRepository(ConnectionUtil.getDriverDataSource());
-    Repository repository = new JdbcRepository(ConnectionUtil.getHikariDataSource());
+//    Repository repository = new JdbcRepository(null); // DriverManager
+//    Repository repository = new JdbcRepository(ConnectionUtil.getDriverDataSource()); // DriverDataSource
+    Repository repository = new JdbcRepository(ConnectionUtil.getHikariDataSource()); // HikariDataSource - dbcp
 
     @AfterEach
     void destroy() throws SQLException {

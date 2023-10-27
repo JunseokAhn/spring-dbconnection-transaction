@@ -9,17 +9,6 @@ import java.sql.*;
 import static com.example.ConnectionConst.*;
 
 public class ConnectionUtil {
-
-    public static Connection getConnection() {
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return connection;
-    }
-
     public static Connection getConnection(DataSource dataSource) {
         Connection connection = null;
         try {
