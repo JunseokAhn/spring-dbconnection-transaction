@@ -12,7 +12,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JdbcRepositoryTest {
 
-    JdbcRepository repository = new JdbcRepository();
+//    Repository repository = new JdbcRepository(null);
+//    Repository repository = new JdbcRepository(ConnectionUtil.getDriverDataSource());
+    Repository repository = new JdbcRepository(ConnectionUtil.getHikariDataSource());
 
     @AfterEach
     void destroy() throws SQLException {

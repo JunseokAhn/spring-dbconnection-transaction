@@ -1,5 +1,6 @@
 package com.example;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,10 +10,15 @@ import static com.example.ConnectionUtil.*;
 
 public class JdbcRepository implements Repository {
 
+    private final DataSource dataSource;
+    public JdbcRepository(DataSource dataSource){
+        this.dataSource= dataSource;
+    }
+
     @Override
     public Member save(Member member) throws SQLException {
         String sql = "insert into member(id, name, money) values (?,?,?)";
-        Connection connection = getConnection();
+        Connection connection = getConnection(dataSource);
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setLong(1, member.getId());
         pstmt.setString(2, member.getName());
@@ -25,7 +31,7 @@ public class JdbcRepository implements Repository {
     @Override
     public Member findById(Long id) throws SQLException {
         String sql = "select * from member where id = ?";
-        Connection connection = getConnection();
+        Connection connection = getConnection(dataSource);
         ResultSet rs = null;
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setLong(1, id);
@@ -47,7 +53,7 @@ public class JdbcRepository implements Repository {
     @Override
     public int deleteById(Long id) throws SQLException {
         String sql = "delete member where id = ?";
-        Connection connection = getConnection();
+        Connection connection = getConnection(dataSource);
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setLong(1, id);
         int result = pstmt.executeUpdate();
@@ -58,7 +64,7 @@ public class JdbcRepository implements Repository {
     @Override
     public int deleteAll() throws SQLException {
         String sql = "delete member";
-        Connection connection = getConnection();
+        Connection connection = getConnection(dataSource);
         PreparedStatement pstmt = connection.prepareStatement(sql);
         int result = pstmt.executeUpdate();
         closeConnection(connection, pstmt, null);
@@ -68,7 +74,7 @@ public class JdbcRepository implements Repository {
     @Override
     public List<Member> findByName(String name) throws SQLException {
         String sql = "select * from member where name = ?";
-        Connection connection = getConnection();
+        Connection connection = getConnection(dataSource);
         ResultSet rs = null;
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setString(1, name);
@@ -90,7 +96,7 @@ public class JdbcRepository implements Repository {
     @Override
     public boolean addMoney(Long id, Long money) throws SQLException {
         String sql = "update member set money = money+? where id = ?";
-        Connection connection = getConnection();
+        Connection connection = getConnection(dataSource);
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setLong(1, money);
         pstmt.setLong(2, id);
