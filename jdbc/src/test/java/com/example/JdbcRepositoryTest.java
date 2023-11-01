@@ -54,7 +54,8 @@ class JdbcRepositoryTest {
     void addMoney() throws SQLException {
         Member member = new Member(1L, "1", 10L);
         repository.save(member);
-        repository.addMoney(member.getId(), 10L);
+        Long money = repository.findById(1L).getMoney();
+        repository.updateMoney(member.getId(), money+10L);
         Member foundMember = repository.findById(1L);
         assertThat(foundMember.getMoney()).isEqualTo(20L);
     }

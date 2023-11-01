@@ -10,7 +10,7 @@ public interface Repository {
 
     List<Member> findByName(String name) throws SQLException;
 
-    boolean addMoney(Long id, Long money) throws SQLException;
+    boolean updateMoney(Long id, Long money) throws SQLException;
 
     int deleteById(Long id) throws SQLException;
 

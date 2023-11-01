@@ -93,9 +93,16 @@ public class JdbcRepository implements Repository {
         return members;
     }
 
+    /**
+     * 멤버의 money를 입력받은 money로 대체한다
+     * @param id
+     * @param money
+     * @return true / false
+     * @throws SQLException
+     */
     @Override
-    public boolean addMoney(Long id, Long money) throws SQLException {
-        String sql = "update member set money = money+? where id = ?";
+    public boolean updateMoney(Long id, Long money) throws SQLException {
+        String sql = "update member set money = ? where id = ?";
         Connection connection = getConnection(dataSource);
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setLong(1, money);
@@ -105,4 +112,24 @@ public class JdbcRepository implements Repository {
         return result == 1 ? true : false;
     }
 
+    /**
+     * 멤버의 money를 입력받은 money로 대체한다
+     * @param id
+     * @param money
+     * @param connection 트랜잭션 유지를 위한 추가 파라미터
+     * @return
+     * @throws SQLException
+     */
+    public boolean updateMoney(Long id, Long money, Connection connection) throws SQLException {
+        String sql = "update member set money = ? where id = ?";
+        PreparedStatement pstmt = connection.prepareStatement(sql);
+        pstmt.setLong(1, money);
+        pstmt.setLong(2, id);
+        int result = pstmt.executeUpdate();
+        return result == 1 ? true : false;
+    }
+
+    public DataSource getDataSource(){
+        return this.dataSource;
+    }
 }

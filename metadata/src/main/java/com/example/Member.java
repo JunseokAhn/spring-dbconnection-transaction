@@ -13,4 +13,9 @@ public class Member {
     private Long id;
     private String name;
     private Long money;
+
+    public Member(String name, Long money){
+        this.name= name;
+        this.money= money;
+    }
 }
