@@ -9,11 +9,11 @@ import static com.example.ConnectionUtil.getConnection;
 
 public class JdbcService {
 
-    private JdbcRepository repository;
+    private final JdbcRepository repository;
     private Long memberId = 0L;
 
-    public JdbcService(DataSource dataSource){
-        this.repository= new JdbcRepository(dataSource);
+    public JdbcService(DataSource dataSource) {
+        this.repository = new JdbcRepository(dataSource);
     }
 
     public Member saveMember(Member member) throws SQLException {
@@ -27,9 +27,8 @@ public class JdbcService {
 
     /**
      * from멤버에서 momey만큼 돈을 빼고, to멤버에서 money만큼 돈을 추가한다.
-     *
      * @param fromId from멤버 id
-     * @param toId to멤버 id
+     * @param toId   to멤버 id
      * @param money
      * @throws SQLException
      */
@@ -43,11 +42,12 @@ public class JdbcService {
             toMember.setMoney(toMember.getMoney() + money);
             repository.updateMoney(fromId, fromMember.getMoney(), connection);
             repository.updateMoney(toId, toMember.getMoney(), connection);
+            connection.commit();
 //            throw new Exception("트랜잭션 테스트옹 Exception");
         } catch (Exception e) {
             connection.rollback();
+            throw new IllegalStateException(e);
         } finally {
-            connection.commit();
             connection.setAutoCommit(true);
             connection.close();
         }
