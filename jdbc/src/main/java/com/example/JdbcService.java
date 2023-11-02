@@ -1,5 +1,6 @@
 package com.example;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -8,8 +9,12 @@ import static com.example.ConnectionUtil.getConnection;
 
 public class JdbcService {
 
-    private JdbcRepository repository = new JdbcRepository(ConnectionUtil.getHikariDataSource());
+    private JdbcRepository repository;
     private Long memberId = 0L;
+
+    public JdbcService(DataSource dataSource){
+        this.repository= new JdbcRepository(dataSource);
+    }
 
     public Member saveMember(Member member) throws SQLException {
         member.setId(memberId++);

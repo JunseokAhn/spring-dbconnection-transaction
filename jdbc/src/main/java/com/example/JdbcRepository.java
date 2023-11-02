@@ -126,6 +126,7 @@ public class JdbcRepository implements Repository {
         pstmt.setLong(1, money);
         pstmt.setLong(2, id);
         int result = pstmt.executeUpdate();
+        closeConnection(null, pstmt, null); // connection을 닫지않고 트랜잭션을 유지한다
         return result == 1 ? true : false;
     }
 

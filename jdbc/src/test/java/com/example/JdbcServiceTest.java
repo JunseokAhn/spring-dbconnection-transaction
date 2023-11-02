@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 class JdbcServiceTest {
 
-    private final JdbcService service= new JdbcService();
+    private final JdbcService service= new JdbcService(ConnectionUtil.getHikariDataSource());
     @AfterEach
 //    @Test
     void destroy() throws SQLException {
