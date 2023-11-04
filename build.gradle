@@ -14,7 +14,7 @@ subprojects {
 
     group = 'com.example'
     version = '0.0.1-SNAPSHOT'
-    java.sourceCompatibility = '17'
+    java.sourceCompatibility = '21'
 
     apply plugin: 'java'
     apply plugin: 'org.springframework.boot'
@@ -43,7 +43,7 @@ subprojects {
     }
 }
 
-project(':metadata') {
+project(':common') {
     bootJar.enabled=false
     jar.enabled=true
 }
@@ -51,5 +51,5 @@ project(':metadata') {
 project(':jdbc'){
     bootJar.enabled=false
     jar.enabled=true
-    dependencies.implementation project(':metadata')
+    dependencies.implementation project(':common')
 }

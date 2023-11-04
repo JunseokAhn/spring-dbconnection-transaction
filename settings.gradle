@@ -1,4 +1,5 @@
 rootProject.name = 'spring-dbconnection-transaction'
 include 'jdbc'
 include 'metadata'
+include 'common'
 
