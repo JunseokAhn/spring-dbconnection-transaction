@@ -1,18 +1,25 @@
 package com.example;
 
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.JdbcUtils;
+
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.example.ConnectionUtil.*;
 
-public class JdbcRepository implements Repository {
+public class TxManagerRepository implements Repository {
 
     private final DataSource dataSource;
-    public JdbcRepository(DataSource dataSource){
-        this.dataSource= dataSource;
+
+    public TxManagerRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -95,6 +102,7 @@ public class JdbcRepository implements Repository {
 
     /**
      * 멤버의 money를 입력받은 money로 대체한다
+     *
      * @param id
      * @param money
      * @return true / false
@@ -112,49 +120,38 @@ public class JdbcRepository implements Repository {
         return result == 1 ? true : false;
     }
 
-    /**
-     * 멤버의 money를 입력받은 money로 대체한다
-     * @param id
-     * @param money
-     * @param connection 트랜잭션 유지를 위한 추가 파라미터
-     * @return
-     * @throws SQLException
-     */
-    public boolean updateMoney(Long id, Long money, Connection connection) throws SQLException {
-        String sql = "update member set money = ? where id = ?";
-        PreparedStatement pstmt = connection.prepareStatement(sql);
-        pstmt.setLong(1, money);
-        pstmt.setLong(2, id);
-        int result = pstmt.executeUpdate();
-        closeConnection(null, pstmt, null); // connection을 닫지않고 트랜잭션을 유지한다
-        return result == 1 ? true : false;
-    }
-
-    public DataSource getDataSource(){
+    public DataSource getDataSource() {
         return this.dataSource;
     }
 
-    public void closeConnection(Connection connection, PreparedStatement pstmt, ResultSet rs) {
+
+    /**
+     * 트랜잭션 동기화 매니저에서 관리중이면 보관된 커넥션을 꺼내오고,
+     * 트랜잭션 동기화 매니저에서 관리중이 아니면 새 커넥션을 생성해 반환한다.
+     */
+    private Connection getConnection(DataSource dataSource) throws CannotGetJdbcConnectionException {
+        try {
+            return DataSourceUtils.doGetConnection(dataSource);
+        } catch (SQLException ex) {
+            throw new CannotGetJdbcConnectionException("Failed to obtain JDBC Connection", ex);
+        } catch (IllegalStateException ex) {
+            throw new CannotGetJdbcConnectionException("Failed to obtain JDBC Connection", ex);
+        }
+    }
+
+    /**
+     * 트랜잭션 동기화 매니저에서 관리중이면 txManager에 커넥션을 반환하고,
+     * 트랜잭션 동기화 매니저에서 관리중이 아니면 커넥션을 종료한다
+     */
+    private void closeConnection(Connection connection, PreparedStatement pstmt, ResultSet rs) {
         if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            JdbcUtils.closeResultSet(rs);
         }
         if (pstmt != null) {
-            try {
-                pstmt.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            JdbcUtils.closeStatement(pstmt);
         }
         if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            DataSourceUtils.releaseConnection(connection, dataSource);
         }
     }
 }

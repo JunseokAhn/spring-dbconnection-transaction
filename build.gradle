@@ -48,6 +48,12 @@ project(':common') {
     jar.enabled=true
 }
 
+project(':txManager'){
+    bootJar.enabled=false
+    jar.enabled=true
+    dependencies.implementation project(':common')
+}
+
 project(':jdbc'){
     bootJar.enabled=false
     jar.enabled=true
