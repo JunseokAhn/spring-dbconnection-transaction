@@ -1,5 +1,6 @@
 rootProject.name = 'spring-dbconnection-transaction'
 include 'jdbc'
 include 'txManager'
+include 'transactionAop'
 include 'common'
 
