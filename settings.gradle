@@ -1,4 +1,4 @@
-rootProject.name = 'spring-dbconnection-transaction'
+rootProject.name = 'springboot-dataAccess'
 include 'jdbc'
 include 'common'
 
